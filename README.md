@@ -6,6 +6,7 @@
 
 ### stop and remove so you can re run
 `docker stop dtserver`
+
 `docker rm dtserver`
 
 

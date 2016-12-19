@@ -14,11 +14,8 @@ class DateTimeProtokoll {
     public DateTimeProtokoll (Socket s) {  // Konstruktor
         try {
             this.s = s;
-            vomClient = new BufferedReader(
-                    new InputStreamReader(
-                            s.getInputStream()));
-            zumClient = new PrintWriter(
-                    s.getOutputStream(),true);
+            vomClient = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            zumClient = new PrintWriter(s.getOutputStream(),true);
         } catch (IOException e) {
             System.out.println("IO-Error");
             e.printStackTrace();
