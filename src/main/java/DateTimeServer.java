@@ -9,7 +9,16 @@ class DateTimeServer {
 
             while(true){
                 final Socket s = server.accept();    // Client-Verbindung akzeptieren
-                new DateTimeProtokoll(s).transact();     // Protokoll abwickeln
+                new Thread(new Runnable() {
+                    public void run() {
+                        new DateTimeProtokoll(s).transact();     // Protokoll abwickeln
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         } catch (ArrayIndexOutOfBoundsException ae) {
             System.out.println("Aufruf: java DateTimeServer <Port-Nr>");
