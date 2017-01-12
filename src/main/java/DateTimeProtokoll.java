@@ -10,12 +10,14 @@ class DateTimeProtokoll {
     Socket s;                   // Socket in Verbindung mit dem Client
     BufferedReader vomClient;   // Eingabe-Strom vom Client
     PrintWriter zumClient;      // Ausgabe-Strom zum Client
+    ObjectOutputStream zumClientSerialized;
 
     public DateTimeProtokoll (Socket s) {  // Konstruktor
         try {
             this.s = s;
             vomClient = new BufferedReader(new InputStreamReader(s.getInputStream()));
             zumClient = new PrintWriter(s.getOutputStream(),true);
+            zumClientSerialized = new ObjectOutputStream(s.getOutputStream());
         } catch (IOException e) {
             System.out.println("IO-Error");
             e.printStackTrace();
@@ -29,9 +31,9 @@ class DateTimeProtokoll {
             Date jetzt = new Date();                // Zeitpunkt bestimmen
             // vom Client empfangenes Kommando ausfuehren
             if (wunsch.equalsIgnoreCase("date"))
-                zumClient.println(date.format(jetzt));
+                zumClientSerialized.writeObject(new DateTimeInfo(date.format(jetzt)));
             else if (wunsch.equalsIgnoreCase("time"))
-                zumClient.println(time.format(jetzt));
+                zumClientSerialized.writeObject(new DateTimeInfo(time.format(jetzt)));
             else
                 zumClient.println(wunsch +" ist als Kommando unzulaessig!");
             s.close();       // Socket (und damit auch Stroeme) schliessen
