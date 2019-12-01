@@ -2,11 +2,8 @@
 `docker build -t datetimeserver .`
 
 ### start container, exposing port 6060 to us / the client
-`docker run -d -p 6060:6060 --name dtserver datetimeserver`
+`docker run -d -p 6060:6060 --rm --name dtserver datetimeserver`
 
-### stop and remove so you can re run
+### stop container
+you may rerun it later at any time using the `docker run` command from above.
 `docker stop dtserver`
-
-`docker rm dtserver`
-
-

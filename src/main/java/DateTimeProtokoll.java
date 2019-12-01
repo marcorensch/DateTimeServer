@@ -2,41 +2,47 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.text.*;
+
 class DateTimeProtokoll {
-    static SimpleDateFormat   // Formate fuer den Zeitpunkt
-            time = new SimpleDateFormat("'Es ist gerade 'H'.'mm' Uhr.'"),
-            date = new SimpleDateFormat("'Heute ist 'EEEE', der 'dd.MM.yy");
+    // Formate für den Zeitpunkt
+    private static SimpleDateFormat time = new SimpleDateFormat("'Es ist gerade 'H'.'mm' Uhr.'");
+    private static SimpleDateFormat date = new SimpleDateFormat("'Heute ist 'EEEE', der 'dd.MM.yy");
 
-    Socket s;                   // Socket in Verbindung mit dem Client
-    BufferedReader vomClient;   // Eingabe-Strom vom Client
-    PrintWriter zumClient;      // Ausgabe-Strom zum Client
-    ObjectOutputStream zumClientSerialized;
+    private Socket clientSocket;        // Socket in Verbindung mit dem Client
+    private BufferedReader vomClient;   // Eingabe-Strom vom Client
+    private PrintWriter zumClient;      // Ausgabe-Strom zum Client
+    private ObjectOutputStream zumClientSerialized;
 
-    public DateTimeProtokoll (Socket s) {  // Konstruktor
+    public DateTimeProtokoll (Socket clientSocket) {
         try {
-            this.s = s;
-            vomClient = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            zumClient = new PrintWriter(s.getOutputStream(),true);
-            zumClientSerialized = new ObjectOutputStream(s.getOutputStream());
+            this.clientSocket = clientSocket;
+            vomClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            zumClient = new PrintWriter(clientSocket.getOutputStream(),true);
+            zumClientSerialized = new ObjectOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
             System.out.println("IO-Error");
             e.printStackTrace();
         }
     }
-    public void transact() {     // Methode, die das Protokoll abwickelt
+
+    // Methode die das Protokoll abwickelt
+    public void transact() {
         System.out.println("Protokoll gestartet");
         try {
             zumClient.println("Geben Sie DATE oder TIME ein");
-            String wunsch = vomClient.readLine();   // v. Client empfangen
-            Date jetzt = new Date();                // Zeitpunkt bestimmen
-            // vom Client empfangenes Kommando ausfuehren
-            if (wunsch.equalsIgnoreCase("date"))
+            String wunsch = vomClient.readLine();   // von Client empfangen
+            Date jetzt = new Date();
+
+            // vom Client empfangenes Kommando ausführen
+            if (wunsch.equalsIgnoreCase("date")) {
                 zumClientSerialized.writeObject(new DateTimeInfo(date.format(jetzt)));
-            else if (wunsch.equalsIgnoreCase("time"))
+            } else if (wunsch.equalsIgnoreCase("time")) {
                 zumClientSerialized.writeObject(new DateTimeInfo(time.format(jetzt)));
-            else
+            } else {
                 zumClient.println(wunsch +" ist als Kommando unzulaessig!");
-            s.close();       // Socket (und damit auch Stroeme) schliessen
+            }
+
+            clientSocket.close();       // Socket, und damit auch Streams, schliessen
         } catch (IOException e) {
             System.out.println("IO-Error");
         }
