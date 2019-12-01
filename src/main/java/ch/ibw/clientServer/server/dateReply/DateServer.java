@@ -11,16 +11,16 @@ import java.util.Date;
  * datetime, then closes the connection. This is arguably the simplest server
  * you can write. Beware though that a client has to be completely served its
  * date before the server will be able to handle another client.
+ *
+ * @see <https://cs.lmu.edu/~ray/notes/javanetexamples/>
  */
 public class DateServer {
     public static void main(String[] args) throws IOException {
         try (ServerSocket listener = new ServerSocket(6060)) {
             System.out.println("DateServer läuft");
-            while (true) {
-                try (Socket socket = listener.accept()) {
-                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                    out.println(new Date().toString());
-                }
+            try (Socket socket = listener.accept()) {   // Warte auf Clientverbindung
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                out.println(new Date().toString());     // Sende Antwort an Client
             }
         }
     }
