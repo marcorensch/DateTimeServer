@@ -1,3 +1,5 @@
+package ch.ibw.clientServer.server.javaReply;
+
 import java.io.*;
 import java.net.*;
 class DateTimeServer {
