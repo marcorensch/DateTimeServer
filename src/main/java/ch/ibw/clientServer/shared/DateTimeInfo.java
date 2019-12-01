@@ -1,4 +1,4 @@
-package ch.ibw.clientServer.server.javaReply;
+package ch.ibw.clientServer.shared;
 
 import java.io.Serializable;
 

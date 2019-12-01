@@ -1,5 +1,7 @@
 package ch.ibw.clientServer.server.javaReply;
 
+import ch.ibw.clientServer.shared.DateTimeInfo;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;

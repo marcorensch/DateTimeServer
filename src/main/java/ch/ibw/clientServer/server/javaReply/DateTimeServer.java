@@ -10,15 +10,10 @@ class DateTimeServer {
             System.out.println("DateTimeServer läuft");         // Statusmeldung
 
             while(true){
-                final Socket s = server.accept();               // Client Verbindung akzeptieren
+                final Socket socket = server.accept();               // Client Verbindung akzeptieren
                 new Thread(new Runnable() {
                     public void run() {
-                        new DateTimeProtokoll(s).transact();    // Protokoll abwickeln
-                        try {
-                            Thread.sleep(10000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        new DateTimeProtokoll(socket).transact();    // Protokoll abwickeln
                     }
                 }).start();
             }
