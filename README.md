@@ -5,5 +5,5 @@
 `docker run -d -p 6060:6060 --rm --name dtserver datetimeserver`
 
 ### stop container
-you may rerun it later at any time using the `docker run` command from above.
+you may rerun it later at any time using the `docker run` command from above. \
 `docker stop dtserver`
