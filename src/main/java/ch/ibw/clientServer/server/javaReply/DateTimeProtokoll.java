@@ -22,7 +22,6 @@ class DateTimeProtokoll {
             this.clientSocket = clientSocket;
             vomClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             zumClient = new PrintWriter(clientSocket.getOutputStream(),true);
-            zumClientSerialized = new ObjectOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
             System.out.println("IO-Error");
             e.printStackTrace();
@@ -39,9 +38,9 @@ class DateTimeProtokoll {
 
             // vom Client empfangenes Kommando ausführen
             if (wunsch.equalsIgnoreCase("date")) {
-                zumClientSerialized.writeObject(new DateTimeInfo(date.format(jetzt)));
+                zumClient.println(new XmlSerializer().serialize(new DateTimeInfo(date.format(jetzt))));
             } else if (wunsch.equalsIgnoreCase("time")) {
-                zumClientSerialized.writeObject(new DateTimeInfo(time.format(jetzt)));
+                zumClient.println(new XmlSerializer().serialize(new DateTimeInfo(time.format(jetzt))));
             } else {
                 zumClient.println(wunsch +" ist als Kommando unzulaessig!");
             }

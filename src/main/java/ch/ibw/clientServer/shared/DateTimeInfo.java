@@ -1,8 +1,6 @@
 package ch.ibw.clientServer.shared;
 
-import java.io.Serializable;
-
-public class DateTimeInfo implements Serializable {
+public class DateTimeInfo {
     private String info;
 
     public DateTimeInfo(String info){
