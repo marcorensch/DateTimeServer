@@ -24,6 +24,11 @@ class DateTimeProtokoll {
             zumClient = new PrintWriter(clientSocket.getOutputStream(),true);
             zumClientSerialized = new ObjectOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
+            try {
+                this.clientSocket.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
             System.out.println("IO-Error");
             e.printStackTrace();
         }
@@ -43,12 +48,16 @@ class DateTimeProtokoll {
             } else if (wunsch.equalsIgnoreCase("time")) {
                 zumClientSerialized.writeObject(new DateTimeInfo(time.format(jetzt)));
             } else {
-                zumClient.println(wunsch +" ist als Kommando unzulaessig!");
+                zumClient.println(wunsch + " ist als Kommando unzulaessig!");
             }
-
-            clientSocket.close();       // Socket, und damit auch Streams, schliessen
         } catch (IOException e) {
             System.out.println("IO-Error");
+        } finally {
+            try {
+                clientSocket.close();       // Socket, und damit auch Streams, schliessen
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         System.out.println("Protokoll beendet");
     }
