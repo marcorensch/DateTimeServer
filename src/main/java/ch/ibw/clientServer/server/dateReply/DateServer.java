@@ -22,29 +22,33 @@ public class DateServer {
         try (ServerSocket listener = new ServerSocket(6060)) {
             System.out.println("DateServer läuft");
             while(true) {
-                Socket socket = listener.accept();
+                final Socket socket = listener.accept();
                 new Thread(() -> {
                     try {
-                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
-                        out.println("Was möchtest du (date/time)?");     // Sende Optionen an Client
-
-                        BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                        String dateOrTime = fromClient.readLine();
-
-                        System.out.println(dateOrTime);
-                        if (dateOrTime.equalsIgnoreCase("date")) {
-                            out.println(new Date());
-                        } else if (dateOrTime.equalsIgnoreCase("time")) {
-                            out.println(new SimpleDateFormat("HH:mm:ss").format(new Date()));
-                        }
-                        socket.close();
+                        transact(socket);
                     }catch (Exception ex){
                         System.out.println(ex);
                     }
                 }).start();
             }
         }
+    }
+
+    private static void transact(Socket socket) throws IOException {
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+        out.println("Was möchtest du (date/time)?");     // Sende Optionen an Client
+
+        BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        String dateOrTime = fromClient.readLine();
+
+        System.out.println(dateOrTime);
+        if (dateOrTime.equalsIgnoreCase("date")) {
+            out.println(new Date());
+        } else if (dateOrTime.equalsIgnoreCase("time")) {
+            out.println(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+        }
+        socket.close();
     }
 }
