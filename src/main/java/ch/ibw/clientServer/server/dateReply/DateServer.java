@@ -1,9 +1,12 @@
 package ch.ibw.clientServer.server.dateReply;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -18,9 +21,31 @@ public class DateServer {
     public static void main(String[] args) throws IOException {
         try (ServerSocket listener = new ServerSocket(6060)) {
             System.out.println("DateServer läuft");
-            try (Socket socket = listener.accept()) {   // Warte auf Clientverbindung
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                out.println(new Date().toString());     // Sende Antwort an Client
+            while(true) {
+                try (Socket socket = listener.accept()) {   // Warte auf Clientverbindung
+
+                    // TODO hier kommt der Script für Date & Time
+//                    Frage retounieren - data oder time?
+//                    socket.getInputStream()
+
+
+                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                    out.println("Was möchtest du (date/time)?");     // Sende Optionen an Client
+
+                    final BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    String dateOrTime = fromClient.readLine();
+
+                    System.out.println(dateOrTime);
+                    if(dateOrTime.equalsIgnoreCase("date")){
+                        out.println(new Date());
+                    }else if(dateOrTime.equalsIgnoreCase("time")){
+                        out.println(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+                    }
+
+
+//                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+//                    out.println(new Date().toString());     // Sende Antwort an Client
+                }
             }
         }
     }
