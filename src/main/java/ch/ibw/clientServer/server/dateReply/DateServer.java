@@ -22,30 +22,28 @@ public class DateServer {
         try (ServerSocket listener = new ServerSocket(6060)) {
             System.out.println("DateServer läuft");
             while(true) {
-                try (Socket socket = listener.accept()) {   // Warte auf Clientverbindung
+                Socket socket = listener.accept();
+                new Thread(() -> {
+                    try {
+                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-                    // TODO hier kommt der Script für Date & Time
-//                    Frage retounieren - data oder time?
-//                    socket.getInputStream()
+                        out.println("Was möchtest du (date/time)?");     // Sende Optionen an Client
 
+                        BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                    out.println("Was möchtest du (date/time)?");     // Sende Optionen an Client
+                        String dateOrTime = fromClient.readLine();
 
-                    final BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    String dateOrTime = fromClient.readLine();
-
-                    System.out.println(dateOrTime);
-                    if(dateOrTime.equalsIgnoreCase("date")){
-                        out.println(new Date());
-                    }else if(dateOrTime.equalsIgnoreCase("time")){
-                        out.println(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+                        System.out.println(dateOrTime);
+                        if (dateOrTime.equalsIgnoreCase("date")) {
+                            out.println(new Date());
+                        } else if (dateOrTime.equalsIgnoreCase("time")) {
+                            out.println(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+                        }
+                        socket.close();
+                    }catch (Exception ex){
+                        System.out.println(ex);
                     }
-
-
-//                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-//                    out.println(new Date().toString());     // Sende Antwort an Client
-                }
+                }).start();
             }
         }
     }
